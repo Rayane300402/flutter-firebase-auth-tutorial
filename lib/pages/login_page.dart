@@ -2,29 +2,67 @@ import 'package:auth/components/customButton.dart';
 import 'package:auth/components/myTextField.dart';
 import 'package:auth/components/square_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   // textcontroller for email and password
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
 
   // user sign in function
   void signIn() async {
+    // show log in circle
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text,
       );
     } on FirebaseAuthException catch (e) {
-      debugPrint('Auth error: ${e.code} – ${e.message}');
-    } catch (e, st) {
-      debugPrint('Unexpected: $e\n$st');
+      final msg = _authErrorMessage(e);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     }
+    // catch (e, st) {
+    //   debugPrint('Unexpected: $e\n$st');
+    // }
+
+    Navigator.pop(context);
   }
 
+  String _authErrorMessage(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'invalid-email':
+        return 'That email looks invalid.';
+      case 'user-disabled':
+        return 'This account is disabled.';
+      case 'too-many-requests':
+        return 'Too many attempts. Try again later.';
+      case 'operation-not-allowed':
+        return 'Email/password sign-in isn’t enabled for this project.';
+      // With enumeration protection ON, wrong email or wrong password → invalid-credential
+      case 'invalid-credential':
+      case 'wrong-password': // legacy
+      case 'user-not-found': // legacy (if protection is OFF)
+        return 'Email or password is incorrect.';
+      default:
+        return 'Sign-in failed (${e.code}). Try again.';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +195,7 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                ]
+                ],
               ),
             ],
           ),
