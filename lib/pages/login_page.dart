@@ -1,19 +1,30 @@
 import 'package:auth/components/customButton.dart';
 import 'package:auth/components/myTextField.dart';
 import 'package:auth/components/square_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  // textcontroller for username and password
-  final TextEditingController usernameController = TextEditingController();
+  // textcontroller for email and password
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   // user sign in function
-  void signIn() {
-    // Implement sign in logic here
+  void signIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      debugPrint('Auth error: ${e.code} – ${e.message}');
+    } catch (e, st) {
+      debugPrint('Unexpected: $e\n$st');
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,16 +53,16 @@ class LoginPage extends StatelessWidget {
 
               const SizedBox(height: 25),
 
-              // text fields for username
+              // text field for email
               CustomTextField(
-                hintText: 'Username',
-                controller: usernameController,
+                hintText: 'Email',
+                controller: emailController,
                 obscureText: false,
               ),
 
               const SizedBox(height: 10),
 
-              // textfield for pasrd
+              // textfield for pswrd
               CustomTextField(
                 hintText: 'Password',
                 controller: passwordController,

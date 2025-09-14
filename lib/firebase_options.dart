@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'authtutorial-15fac.firebaseapp.com',
     storageBucket: 'authtutorial-15fac.firebasestorage.app',
   );
+
 }
