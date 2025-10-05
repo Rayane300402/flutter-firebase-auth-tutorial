@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../services/auth_service.dart';
+
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
   LoginPage({super.key, required this.onTap});
@@ -43,6 +45,27 @@ class _LoginPageState extends State<LoginPage> {
     // }
 
     Navigator.pop(context);
+  }
+
+  Future<void> signInWithGoogle() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      await AuthService.signInWithGoogle();
+      // you can navigate to home here if you like
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google sign-in failed: $e')),
+        );
+      }
+    } finally {
+      if (mounted) Navigator.pop(context);
+    }
   }
 
   String _authErrorMessage(FirebaseAuthException e) {
@@ -164,13 +187,13 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // google button
-                    SquareTile(imagePath: 'lib/images/google.png'),
+                    // google  5:31:24
+                    SquareTile(imagePath: 'lib/images/google.png', onTap: signInWithGoogle,),
 
                     const SizedBox(width: 25),
 
                     // apple button
-                    SquareTile(imagePath: 'lib/images/apple-logo.png'),
+                    SquareTile(imagePath: 'lib/images/apple-logo.png', onTap: signInWithGoogle,),
                   ],
                 ),
 

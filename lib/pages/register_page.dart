@@ -123,24 +123,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   obscureText: true,
                 ),
 
-                const SizedBox(height: 10),
-
-                // forgot password text
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
 
                 const SizedBox(height: 25),
 
@@ -179,12 +161,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // google button
-                    SquareTile(imagePath: 'lib/images/google.png'),
+                    SquareTile(imagePath: 'lib/images/google.png', onTap: () {},),
 
                     const SizedBox(width: 25),
 
                     // apple button
-                    SquareTile(imagePath: 'lib/images/apple-logo.png'),
+                    SquareTile(imagePath: 'lib/images/apple-logo.png', onTap: () {},),
                   ],
                 ),
 
